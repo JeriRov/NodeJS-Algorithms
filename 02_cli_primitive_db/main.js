@@ -17,6 +17,17 @@ const saveDatabase = () => {
     fs.writeFileSync(DATABASE_FILE_NAME, JSON.stringify(users), 'utf8');
 }
 
+const ageValidation = (input) => {
+    const age = parseInt(input);
+    if (isNaN(age)) {
+        return 'Please enter a valid number for age.';
+    }
+    if (age < 0) {
+        return 'Age cannot be negative.';
+    }
+    return true;
+}
+
 const addUser = async () => {
     const answers = await inquirer.prompt([
         {
@@ -45,6 +56,7 @@ const promptForUserInfo = async (name) => {
             type: 'input',
             name: 'age',
             message: 'Enter your age:',
+            validate: ageValidation,
         },
     ]);
 
