@@ -90,11 +90,11 @@ const searchUser = async () => {
     ]);
 
     const searchName = answer.searchName.toLowerCase();
-    const foundUser = users.find((user) => user.name.toLowerCase() === searchName);
+    const foundUsers = users.filter((user) => user.name.toLowerCase() === searchName);
 
-    if (foundUser) {
-        console.log(`User ${foundUser.name} was found:`);
-        console.log(foundUser);
+    if (foundUsers.length) {
+        console.log(`Found ${foundUsers.length} matches for your query ${answer.searchName}:`);
+        console.log(foundUsers);
     } else {
         console.log('User not found in the database.');
     }
