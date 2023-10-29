@@ -8,7 +8,7 @@ const uniqueValues = () => {
     console.time('uniqueValues');
 
     for (let i = 0; i <= 19; i++) {
-        const fileContents = fs.readFileSync(filePath(i), 'utf-8');
+        const fileContents = fs.readFileSync(filePath(i), {encoding: 'utf-8'});
         const usernames = fileContents.split('\n');
 
         for (const username of usernames) {
@@ -20,25 +20,24 @@ const uniqueValues = () => {
 }
 
 const existInAllFiles = () => {
-    const usernamesInFiles = {};
+    const usernamesInFiles = new Map();
 
     console.time('existInAllFiles');
 
     for (let i = 0; i <= 19; i++) {
-        const fileContents = fs.readFileSync(filePath(i), 'utf-8');
+        const fileContents = fs.readFileSync(filePath(i), {encoding: 'utf-8'});
         const usernames = fileContents.split('\n');
         const setOfUsernames = new Set(usernames);
 
         for (const username of setOfUsernames) {
-            if (!usernamesInFiles[username]) {
-                usernamesInFiles[username] = 1;
+            if (!usernamesInFiles.has(username)) {
+                usernamesInFiles.set(username, 1);
             } else {
-                usernamesInFiles[username]++;
+                usernamesInFiles.set(username, usernamesInFiles.get(username) + 1);
             }
         }
     }
-    const usernamesInAllFiles = Object.keys(usernamesInFiles).filter(username => usernamesInFiles[username] === 20);
-
+    const usernamesInAllFiles = [...usernamesInFiles.values()].filter((count) => count === 20);
 
     console.timeEnd('existInAllFiles');
 
@@ -46,30 +45,33 @@ const existInAllFiles = () => {
 }
 
 const existInAtLeastTen = () => {
-    const usernamesInFiles = {};
+    const usernamesInFiles = new Map();
 
     console.time('existInAtLeastTen');
 
     for (let i = 0; i <= 19; i++) {
-        const fileContents = fs.readFileSync(filePath(i), 'utf-8');
+        const fileContents = fs.readFileSync(filePath(i), {encoding: 'utf-8'});
         const usernames = fileContents.split('\n');
         const setOfUsernames = new Set(usernames);
 
         for (const username of setOfUsernames) {
-            if (!usernamesInFiles[username]) {
-                usernamesInFiles[username] = 1;
+            if (!usernamesInFiles.has(username)) {
+                usernamesInFiles.set(username, 1);
             } else {
-                usernamesInFiles[username]++;
+                usernamesInFiles.set(username, usernamesInFiles.get(username) + 1);
             }
         }
     }
 
-    const usernamesInAtLeastTenFiles = Object.keys(usernamesInFiles).filter(username => usernamesInFiles[username] >= 10);
+    const usernamesInAtLeastTenFiles = [...usernamesInFiles.values()].filter((count) => count >= 10);
 
     console.timeEnd('existInAtLeastTen');
     return usernamesInAtLeastTenFiles.length;
 }
+console.time('Total');
 
 console.log('Unique values: ', uniqueValues());
 console.log('Exist in all files: ', existInAllFiles());
 console.log('Exist in at least ten files: ', existInAtLeastTen());
+
+console.timeEnd('Total');
