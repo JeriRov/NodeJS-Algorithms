@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const endpoints = [
+const ENDPOINTS = [
     'https://jsonbase.com/sls-team/json-793',
     'https://jsonbase.com/sls-team/json-955',
     'https://jsonbase.com/sls-team/json-231',
@@ -30,8 +30,7 @@ const getRequestWithRetry = async (url, maxRetries = 3) => {
             return response.data;
         } catch (error) {
             if (retry === maxRetries) {
-                console.log(`[Fail] ${url}: The endpoint is unavailable`);
-                return null;
+                throw error;
             }
         }
     }
@@ -50,27 +49,27 @@ const findIsDone = (data) => {
             }
         }
     }
-    return null;
 }
 
 const processEndpoint = async (url) => {
-    const data = await getRequestWithRetry(url);
-
-    if (data) {
-        const isDone = findIsDone(data);
-        console.log(`[Success] ${url}: isDone - ${isDone}`);
-        return isDone;
+    try {
+        const data = await getRequestWithRetry(url);
+        if (data) {
+            const isDone = findIsDone(data);
+            console.log(`[Success] ${url}: isDone - ${isDone}`);
+            return isDone;
+        }
+    } catch (error) {
+        console.log(`[Fail] ${url}: The endpoint is unavailable`);
     }
-    return null;
 }
 
 const main = async () => {
     let trueCount = 0;
     let falseCount = 0;
 
-    for (const endpoint of endpoints) {
+    for (const endpoint of ENDPOINTS) {
         const isDone = await processEndpoint(endpoint);
-
         if (isDone === true) {
             trueCount++;
         } else if (isDone === false) {
